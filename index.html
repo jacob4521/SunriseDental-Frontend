@@ -56,25 +56,67 @@
       <!-- 3. Patients Section -->
       <section id="patients-section" style="display: none;">
         <h2>Patients Management</h2>
-        <!-- මේක ඇතුළේ කේතය අපි පසුව ලියමු -->
+
+        <!-- Add New Patient Form -->
+        <div class="form-container">
+          <h3>Add New Patient</h3>
+          <form id="add-patient-form">
+            <div class="form-group">
+              <label for="new-pat-name">Patient Name:</label>
+              <input type="text" id="new-pat-name" placeholder="Enter patient name" required>
+            </div>
+            <div class="form-group">
+              <label for="new-pat-contact">Contact Number:</label>
+              <input type="text" id="new-pat-contact" placeholder="07XXXXXXXX" required>
+            </div>
+            <div class="form-group">
+              <label for="new-pat-address">Address:</label>
+              <input type="text" id="new-pat-address" placeholder="Enter patient address" required>
+            </div>
+            <button type="submit" style="margin-top: 15px;">Save Patient</button>
+          </form>
+        </div>
+
+        <!-- Patients List Table -->
+        <div class="table-container"
+          style="margin-top: 40px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+          <h3>All Patients</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <thead>
+              <tr style="background-color: #2c3e50; color: white; text-align: left;">
+                <th style="padding: 10px; border: 1px solid #ddd;">Patient ID</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Name</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Contact</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Address</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="patients-table-body">
+              <tr>
+                <td colspan="5" style="padding: 10px; text-align: center;">Loading patients...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
-<!-- 4. Appointments Section -->
+      <!-- 4. Appointments Section -->
       <section id="appointments-section" style="display: none;">
         <h2>Appointments Management</h2>
-        
+
         <div class="form-container">
           <h3>Book New Appointment</h3>
           <form id="appointment-form">
-            
+
             <!-- Patient Type Selection -->
             <div class="form-group radio-group">
               <label>Patient Status:</label>
               <div>
                 <input type="radio" id="new-patient" name="patient-type" value="new" checked>
                 <label for="new-patient">New Patient</label>
-                
-                <input type="radio" id="existing-patient" name="patient-type" value="existing" style="margin-left: 15px;">
+
+                <input type="radio" id="existing-patient" name="patient-type" value="existing"
+                  style="margin-left: 15px;">
                 <label for="existing-patient">Existing Patient</label>
               </div>
             </div>
@@ -115,14 +157,14 @@
                 <option value="">-- Loading Dentists --</option>
               </select>
             </div>
-            
+
             <div class="form-group">
               <label for="treatment-select">Select Treatment:</label>
               <select id="treatment-select" required>
                 <option value="">-- Loading Treatments --</option>
               </select>
             </div>
-            
+
             <div class="form-group" style="display: flex; gap: 15px;">
               <div style="flex: 1;">
                 <label for="appointment-date">Date:</label>
@@ -137,12 +179,85 @@
             <button type="submit" id="submit-appointment-btn" style="margin-top: 15px;">Book Appointment</button>
           </form>
         </div>
+
+        <!-- Appointments List Table -->
+        <div class="table-container"
+          style="margin-top: 40px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+          <h3>Scheduled Appointments</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <thead>
+              <tr style="background-color: #2c3e50; color: white; text-align: left;">
+                <th style="padding: 10px; border: 1px solid #ddd;">App. ID</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Patient Name</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Dentist</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Treatment</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Date</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Time</th>
+              </tr>
+            </thead>
+            <tbody id="appointments-table-body">
+              <tr>
+                <td colspan="6" style="padding: 10px; text-align: center;">Loading appointments...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
-      <!-- 5. Invoices Section -->
+<!-- 5. Invoices Section -->
       <section id="invoices-section" style="display: none;">
-        <h2>Invoices Management</h2>
-        <!-- මේක ඇතුළේ කේතය අපි පසුව ලියමු -->
+        <h2>Invoice Management</h2>
+        
+        <!-- Appointments Table for Billing -->
+        <div class="table-container" style="margin-top: 20px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+          <h3>Select Appointment to Bill</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <thead>
+              <tr style="background-color: #2c3e50; color: white; text-align: left;">
+                <th style="padding: 10px; border: 1px solid #ddd;">App. ID</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Patient Name</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Date</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="invoice-appointments-table-body">
+              <tr>
+                <td colspan="4" style="padding: 10px; text-align: center;">Loading appointments...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Quick Invoice Form (Hidden by default) -->
+        <div id="quick-invoice-form-container" class="form-container" style="display: none; margin-top: 30px; border: 2px solid #3498db;">
+          <h3>Generate Invoice for Appointment ID: <span id="display-app-id" style="color: #e74c3c;"></span></h3>
+          <form id="generate-invoice-form">
+            <input type="hidden" id="invoice-app-id">
+            
+            <div class="form-group">
+              <label for="invoice-amount">Total Amount (Rs.):</label>
+              <input type="number" id="invoice-amount" step="0.01" placeholder="Enter amount" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="invoice-date">Issued Date:</label>
+              <input type="date" id="invoice-date" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="invoice-status">Payment Status:</label>
+              <select id="invoice-status" required>
+                <option value="Paid">Paid</option>
+                <option value="Pending">Pending</option>
+              </select>
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button type="submit" style="background-color: #27ae60; flex: 1;">Save & Print Invoice</button>
+                <button type="button" onclick="document.getElementById('quick-invoice-form-container').style.display='none'" style="background-color: #95a5a6; flex: 1;">Cancel</button>
+            </div>
+          </form>
+        </div>
       </section>
 
     </div>
