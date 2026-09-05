@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sunrise Dental Clinic</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- 1. Login Section (මුලින්ම පෙන්වන්නේ මේකයි) -->
+  <section id="login-section">
+    <div class="login-container">
+      <h2>Sunrise Dental Clinic</h2>
+      <form id="login-form">
+        <div>
+          <label for="username">Username:</label><br>
+          <input type="text" id="username" required>
+        </div>
+        <br>
+        <div>
+          <label for="password">Password:</label><br>
+          <input type="password" id="password" required>
+        </div>
+        <br>
+        <button type="submit">Login</button>
+        <p id="login-error" style="color: red; display: none;"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- 2. Dashboard Section -->
+  <section id="dashboard-section" style="display: none;">
+    <h1>Dashboard</h1>
+    <button id="logout-btn">Logout</button>
+    <p>Welcome to the Sunrise Dental Clinic Management System!</p>
+
+    <!-- Navigation Menu -->
+    <nav>
+      <button onclick="showSection('patients-section')">Patients</button>
+      <button onclick="showSection('appointments-section')">Appointments</button>
+      <button onclick="showSection('invoices-section')">Invoices</button>
+
+      <!-- Admin ට පමණක් පෙනෙන බොත්තම් -->
+      <button class="admin-only" onclick="showSection('staff-section')">Manage Staff</button>
+      <button class="admin-only" onclick="showSection('dentists-section')">Add Dentists</button>
+      <button class="admin-only" onclick="showSection('treatments-section')">Manage Treatments</button>
+    </nav>
+  </section>
+
+  <!-- 3. Patients Section (Hide කරලා තියෙන්නේ) -->
+  <section id="patients-section" style="display: none;">
+    <h2>Patients Management</h2>
+    <button onclick="showSection('dashboard-section')">Back to Dashboard</button>
+    <!-- මේක ඇතුළේ කේතය අපි පසුව ලියමු -->
+  </section>
+
+  <!-- 4. Appointments Section (Hide කරලා තියෙන්නේ) -->
+  <section id="appointments-section" style="display: none;">
+    <h2>Appointments Management</h2>
+    <button onclick="showSection('dashboard-section')">Back to Dashboard</button>
+    <!-- මේක ඇතුළේ කේතය අපි පසුව ලියමු -->
+  </section>
+
+  <!-- 5. Invoices Section (Hide කරලා තියෙන්නේ) -->
+  <section id="invoices-section" style="display: none;">
+    <h2>Invoices Management</h2>
+    <button onclick="showSection('dashboard-section')">Back to Dashboard</button>
+    <!-- මේක ඇතුළේ කේතය අපි පසුව ලියමු -->
+  </section>
+
+  <script src="js/app.js"></script>
+</body>
+
+</html>

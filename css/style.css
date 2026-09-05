@@ -1,0 +1,134 @@
+/* --- Global Styles --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f7f6;
+    color: #333;
+}
+
+/* --- Login Section --- */
+#login-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.login-container h2 {
+    margin-bottom: 25px;
+    color: #2c3e50;
+    font-size: 24px;
+}
+
+#login-form div {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+#login-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #555;
+}
+
+#login-form input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+#login-form input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+}
+
+#login-error {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+/* --- Buttons --- */
+button {
+    background-color: #3498db;
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* --- Dashboard & Other Sections --- */
+#dashboard-section, 
+#patients-section, 
+#appointments-section, 
+#invoices-section {
+    padding: 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+h1, h2 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+/* Navigation Menu */
+nav {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 20px;
+}
+
+nav button {
+    width: auto;
+    background-color: #ffffff;
+    color: #3498db;
+    border: 2px solid #3498db;
+}
+
+nav button:hover {
+    background-color: #3498db;
+    color: #ffffff;
+}
+
+/* Logout Button */
+#logout-btn {
+    background-color: #e74c3c;
+    width: auto;
+    float: right;
+}
+
+#logout-btn:hover {
+    background-color: #c0392b;
+}
