@@ -6,32 +6,90 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sunrise Dental Clinic</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Fixed Sidebar & Scrollable Content Layout Fixes */
+    html, body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+    #main-layout {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    #sidebar {
+      width: 260px;
+      margin-top: 0px;
+      background-color: #2c3e50;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+      flex-shrink: 0;
+    }
+    #sidebar h2.sidebar-title {
+      margin-top: 0;
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+    #sidebar button, #sidebar a {
+      background: none;
+      border: none;
+      color: white;
+      text-align: left;
+      padding: 12px 15px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-bottom: 5px;
+      text-decoration: none;
+      display: block;
+      width: 100%;
+    }
+    #sidebar button:hover, #sidebar a:hover {
+      background-color: #34495e;
+    }
+    #logout-btn {
+      margin-top: auto; /* Logout button එක Sidebar එකේ පහළටම තල්ලු කරයි */
+      background-color: #e74c3c !important;
+      text-align: center;
+    }
+    #content-area {
+      flex: 1;
+      height: 100vh;
+      overflow-y: auto; /* Content එක වැඩි වුණොත් මේක විතරක් Scroll වේ */
+      padding: 30px;
+      background-color: #f4f6f7;
+      box-sizing: border-box;
+    }
+  </style>
 </head>
 
 <body>
 
   <!-- 1. Login Section -->
-  <section id="login-section">
-    <div class="login-container">
+  <section id="login-section" style="height: 100vh; display: flex; justify-content: center; align-items: center; background-color: #f4f6f7;">
+    <div class="login-container" style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 300px;">
       <h2>Sunrise Dental Clinic</h2>
       <form id="login-form">
-        <div>
+        <div style="margin-bottom: 15px;">
           <label for="username">Username:</label><br>
-          <input type="text" id="username" required>
+          <input type="text" id="username" required style="width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box;">
         </div>
-        <br>
-        <div>
+        <div style="margin-bottom: 15px;">
           <label for="password">Password:</label><br>
-          <input type="password" id="password" required>
+          <input type="password" id="password" required style="width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box;">
         </div>
-        <br>
-        <button type="submit">Login</button>
-        <p id="login-error" style="color: red; display: none;"></p>
+        <button type="submit" style="width: 100%; padding: 10px; background-color: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">Login</button>
+        <p id="login-error" style="color: red; display: none; margin-top: 10px;"></p>
       </form>
     </div>
   </section>
 
-  <!-- අලුත් Main Layout Wrapper (Sidebar + Content) -->
+  <!-- Main Layout Wrapper (Sidebar + Content) -->
   <div id="main-layout" style="display: none;">
 
     <!-- Sidebar -->
@@ -40,48 +98,42 @@
       <button onclick="showSection('patients-section')">Patients</button>
       <button onclick="showSection('appointments-section')">Appointments</button>
       <button onclick="showSection('invoices-section')">Invoices</button>
-      <button href="#" onclick="showSection('dentists-section')">Dentists</button>
-      <button href="#" onclick="showSection('treatments-section')">Treatments</button>
+      <button onclick="showSection('dentists-section')">Dentists</button>
+      <button onclick="showSection('treatments-section')">Treatments</button>
 
       <!-- Admin ට පමණක් පෙනෙන බොත්තම් -->
       <button class="admin-only" onclick="showSection('staff-section')">Manage Staff</button>
-      <button class="admin-only" onclick="showSection('dentists-section')">Add Dentists</button>
-      <button class="admin-only" onclick="showSection('treatments-section')">Manage Treatments</button>
 
       <button id="logout-btn" class="logout-sidebar">Logout</button>
     </nav>
 
-    <!-- Content Area (දකුණු පස) -->
+    <!-- Content Area (දකුණු පස Scroll වන කොටස) -->
     <div id="content-area">
-
 
       <!-- 3. Patients Section -->
       <section id="patients-section" style="display: none;">
         <h2>Patients Management</h2>
 
-        <!-- Add New Patient Form -->
-        <div class="form-container">
+        <div class="form-container" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
           <h3>Add New Patient</h3>
           <form id="add-patient-form">
-            <div class="form-group">
-              <label for="new-pat-name">Patient Name:</label>
-              <input type="text" id="new-pat-name" placeholder="Enter patient name" required>
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label for="new-pat-name">Patient Name:</label><br>
+              <input type="text" id="new-pat-name" placeholder="Enter patient name" required style="width: 100%; padding: 8px;">
             </div>
-            <div class="form-group">
-              <label for="new-pat-contact">Contact Number:</label>
-              <input type="text" id="new-pat-contact" placeholder="07XXXXXXXX" required>
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label for="new-pat-contact">Contact Number:</label><br>
+              <input type="text" id="new-pat-contact" placeholder="07XXXXXXXX" required style="width: 100%; padding: 8px;">
             </div>
-            <div class="form-group">
-              <label for="new-pat-address">Address:</label>
-              <input type="text" id="new-pat-address" placeholder="Enter patient address" required>
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label for="new-pat-address">Address:</label><br>
+              <input type="text" id="new-pat-address" placeholder="Enter patient address" required style="width: 100%; padding: 8px;">
             </div>
-            <button type="submit" style="margin-top: 15px;">Save Patient</button>
+            <button type="submit" style="margin-top: 10px; padding: 8px 15px; background: #27ae60; color: white; border: none; border-radius: 4px;">Save Patient</button>
           </form>
         </div>
 
-        <!-- Patients List Table -->
-        <div class="table-container"
-          style="margin-top: 40px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+        <div class="table-container" style="margin-top: 30px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
           <h3>All Patients</h3>
           <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
             <thead>
@@ -106,44 +158,38 @@
       <section id="appointments-section" style="display: none;">
         <h2>Appointments Management</h2>
 
-        <div class="form-container">
+        <div class="form-container" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
           <h3>Book New Appointment</h3>
           <form id="appointment-form">
-
-            <!-- Patient Type Selection -->
-            <div class="form-group radio-group">
+            <div class="form-group radio-group" style="margin-bottom: 15px;">
               <label>Patient Status:</label>
-              <div>
+              <div style="margin-top: 5px;">
                 <input type="radio" id="new-patient" name="patient-type" value="new" checked>
                 <label for="new-patient">New Patient</label>
-
-                <input type="radio" id="existing-patient" name="patient-type" value="existing"
-                  style="margin-left: 15px;">
+                <input type="radio" id="existing-patient" name="patient-type" value="existing" style="margin-left: 15px;">
                 <label for="existing-patient">Existing Patient</label>
               </div>
             </div>
 
-            <!-- New Patient Fields -->
             <div id="new-patient-fields">
-              <div class="form-group">
-                <label for="patient-name">Patient Name:</label>
-                <input type="text" id="patient-name" placeholder="Enter patient name">
+              <div class="form-group" style="margin-bottom: 10px;">
+                <label for="patient-name">Patient Name:</label><br>
+                <input type="text" id="patient-name" placeholder="Enter patient name" style="width: 100%; padding: 8px;">
               </div>
-              <div class="form-group">
-                <label for="contact-number">Contact Number:</label>
-                <input type="text" id="contact-number" placeholder="07XXXXXXXX">
+              <div class="form-group" style="margin-bottom: 10px;">
+                <label for="contact-number">Contact Number:</label><br>
+                <input type="text" id="contact-number" placeholder="07XXXXXXXX" style="width: 100%; padding: 8px;">
               </div>
-              <div class="form-group">
-                <label for="address">Address:</label>
-                <input type="text" id="address" placeholder="Enter patient address">
+              <div class="form-group" style="margin-bottom: 10px;">
+                <label for="address">Address:</label><br>
+                <input type="text" id="address" placeholder="Enter patient address" style="width: 100%; padding: 8px;">
               </div>
             </div>
 
-            <!-- Existing Patient Fields (Hidden by default) -->
-            <div id="existing-patient-fields" style="display: none;">
+            <div id="existing-patient-fields" style="display: none; margin-bottom: 10px;">
               <div class="form-group">
-                <label for="existing-patient-select">Select Patient:</label>
-                <select id="existing-patient-select">
+                <label for="existing-patient-select">Select Patient:</label><br>
+                <select id="existing-patient-select" style="width: 100%; padding: 8px;">
                   <option value="">-- Select or Load Patients --</option>
                 </select>
               </div>
@@ -151,40 +197,37 @@
 
             <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
 
-            <!-- Appointment Details -->
             <h4>Appointment Details</h4>
-            <div class="form-group">
-              <label for="dentist-select">Select Dentist:</label>
-              <select id="dentist-select" required>
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label for="dentist-select">Select Dentist:</label><br>
+              <select id="dentist-select" required style="width: 100%; padding: 8px;">
                 <option value="">-- Loading Dentists --</option>
               </select>
             </div>
 
-            <div class="form-group">
-              <label for="treatment-select">Select Treatment:</label>
-              <select id="treatment-select" required>
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label for="treatment-select">Select Treatment:</label><br>
+              <select id="treatment-select" required style="width: 100%; padding: 8px;">
                 <option value="">-- Loading Treatments --</option>
               </select>
             </div>
 
-            <div class="form-group" style="display: flex; gap: 15px;">
+            <div class="form-group" style="display: flex; gap: 15px; margin-bottom: 15px;">
               <div style="flex: 1;">
-                <label for="appointment-date">Date:</label>
-                <input type="date" id="appointment-date" required>
+                <label for="appointment-date">Date:</label><br>
+                <input type="date" id="appointment-date" required style="width: 100%; padding: 8px;">
               </div>
               <div style="flex: 1;">
-                <label for="appointment-time">Time:</label>
-                <input type="time" id="appointment-time" required>
+                <label for="appointment-time">Time:</label><br>
+                <input type="time" id="appointment-time" required style="width: 100%; padding: 8px;">
               </div>
             </div>
 
-            <button type="submit" id="submit-appointment-btn" style="margin-top: 15px;">Book Appointment</button>
+            <button type="submit" id="submit-appointment-btn" style="padding: 10px 20px; background: #27ae60; color: white; border: none; border-radius: 4px;">Book Appointment</button>
           </form>
         </div>
 
-        <!-- Appointments List Table -->
-        <div class="table-container"
-          style="margin-top: 40px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+        <div class="table-container" style="margin-top: 30px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
           <h3>Scheduled Appointments</h3>
           <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
             <thead>
@@ -209,10 +252,8 @@
       <!-- 5. Invoices Section -->
       <section id="invoices-section" style="display: none;">
         <h2>Invoice Management</h2>
-
-        <!-- Appointments Table for Billing -->
-        <div class="table-container"
-          style="margin-top: 20px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+        
+        <div class="table-container" style="margin-top: 20px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
           <h3>Select Appointment to Bill</h3>
           <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
             <thead>
@@ -231,36 +272,32 @@
           </table>
         </div>
 
-        <!-- Quick Invoice Form (Hidden by default) -->
-        <div id="quick-invoice-form-container" class="form-container"
-          style="display: none; margin-top: 30px; border: 2px solid #3498db;">
+        <div id="quick-invoice-form-container" class="form-container" style="display: none; margin-top: 30px; background: #fff; padding: 20px; border: 2px solid #3498db; border-radius: 8px;">
           <h3>Generate Invoice for Appointment ID: <span id="display-app-id" style="color: #e74c3c;"></span></h3>
           <form id="generate-invoice-form">
             <input type="hidden" id="invoice-app-id">
-
-            <div class="form-group">
-              <label for="invoice-amount">Total Amount (Rs.):</label>
-              <input type="number" id="invoice-amount" step="0.01" placeholder="Enter amount" required>
+            
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label for="invoice-amount">Total Amount (Rs.):</label><br>
+              <input type="number" id="invoice-amount" step="0.01" placeholder="Enter amount" required style="width: 100%; padding: 8px;">
             </div>
-
-            <div class="form-group">
-              <label for="invoice-date">Issued Date:</label>
-              <input type="date" id="invoice-date" required>
+            
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label for="invoice-date">Issued Date:</label><br>
+              <input type="date" id="invoice-date" required style="width: 100%; padding: 8px;">
             </div>
-
-            <div class="form-group">
-              <label for="invoice-status">Payment Status:</label>
-              <select id="invoice-status" required>
+            
+            <div class="form-group" style="margin-bottom: 15px;">
+              <label for="invoice-status">Payment Status:</label><br>
+              <select id="invoice-status" required style="width: 100%; padding: 8px;">
                 <option value="Paid">Paid</option>
                 <option value="Pending">Pending</option>
               </select>
             </div>
-
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-              <button type="submit" style="background-color: #27ae60; flex: 1;">Save & Print Invoice</button>
-              <button type="button"
-                onclick="document.getElementById('quick-invoice-form-container').style.display='none'"
-                style="background-color: #95a5a6; flex: 1;">Cancel</button>
+            
+            <div style="display: flex; gap: 10px;">
+                <button type="submit" style="background-color: #27ae60; color: white; padding: 10px; border: none; border-radius: 4px; flex: 1; cursor: pointer;">Save & Print Invoice</button>
+                <button type="button" onclick="document.getElementById('quick-invoice-form-container').style.display='none'" style="background-color: #95a5a6; color: white; padding: 10px; border: none; border-radius: 4px; flex: 1; cursor: pointer;">Cancel</button>
             </div>
           </form>
         </div>
@@ -269,34 +306,30 @@
       <!-- 6. Dentists Section -->
       <section id="dentists-section" style="display: none;">
         <h2>Dentists Management</h2>
-
-        <!-- Add Dentist Form (Admin Only) -->
-        <div class="form-container admin-only">
+        
+        <div class="form-container admin-only" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px;">
           <h3>Add New Dentist</h3>
           <form id="add-dentist-form">
-            <div class="form-group">
-              <label for="new-dentist-name">Dentist Name:</label>
-              <input type="text" id="new-dentist-name" placeholder="Dr. Name" required>
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label for="new-dentist-name">Dentist Name:</label><br>
+              <input type="text" id="new-dentist-name" placeholder="Dr. Name" required style="width: 100%; padding: 8px;">
             </div>
-            <button type="submit" style="margin-top: 15px;">Save Dentist</button>
+            <button type="submit" style="padding: 8px 15px; background: #27ae60; color: white; border: none; border-radius: 4px;">Save Dentist</button>
           </form>
         </div>
 
-        <!-- Dentists Table (View for All) -->
-        <div class="table-container" style="margin-top: 30px; background: #fff; padding: 20px; border-radius: 8px;">
+        <div class="table-container" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
           <h3>All Dentists</h3>
           <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
             <thead>
               <tr style="background-color: #2c3e50; color: white; text-align: left;">
                 <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
-                <th style="padding: 10px; border: 1px solid #ddd;">Dentist Name</th>
-                <th style="padding: 10px; border: 1px solid #ddd;">Action</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Name / Type</th>
+                <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Action</th>
               </tr>
             </thead>
             <tbody id="dentists-table-body">
-              <tr>
-                <td colspan="2" style="padding: 10px; text-align: center;">Loading...</td>
-              </tr>
+              <tr><td colspan="3" style="padding: 10px; text-align: center;">Loading...</td></tr>
             </tbody>
           </table>
         </div>
@@ -305,25 +338,23 @@
       <!-- 7. Treatments Section -->
       <section id="treatments-section" style="display: none;">
         <h2>Treatments Management</h2>
-
-        <!-- Add Treatment Form (Admin Only) -->
-        <div class="form-container admin-only">
+        
+        <div class="form-container admin-only" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px;">
           <h3>Add New Treatment</h3>
           <form id="add-treatment-form">
-            <div class="form-group">
-              <label for="new-treatment-type">Treatment Type:</label>
-              <input type="text" id="new-treatment-type" placeholder="e.g., Root Canal" required>
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label for="new-treatment-type">Treatment Type:</label><br>
+              <input type="text" id="new-treatment-type" placeholder="e.g., Root Canal" required style="width: 100%; padding: 8px;">
             </div>
-            <div class="form-group">
-              <label for="new-treatment-price">Price (Rs.):</label>
-              <input type="number" id="new-treatment-price" step="0.01" placeholder="Enter amount" required>
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label for="new-treatment-price">Price (Rs.):</label><br>
+              <input type="number" id="new-treatment-price" step="0.01" placeholder="Enter amount" required style="width: 100%; padding: 8px;">
             </div>
-            <button type="submit" style="margin-top: 15px;">Save Treatment</button>
+            <button type="submit" style="padding: 8px 15px; background: #27ae60; color: white; border: none; border-radius: 4px;">Save Treatment</button>
           </form>
         </div>
 
-        <!-- Treatments Table (View for All) -->
-        <div class="table-container" style="margin-top: 30px; background: #fff; padding: 20px; border-radius: 8px;">
+        <div class="table-container" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
           <h3>Available Treatments</h3>
           <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
             <thead>
@@ -331,13 +362,11 @@
                 <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
                 <th style="padding: 10px; border: 1px solid #ddd;">Treatment Type</th>
                 <th style="padding: 10px; border: 1px solid #ddd;">Price (Rs.)</th>
-                <th style="padding: 10px; border: 1px solid #ddd;">Action</th>
+                <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Action</th>
               </tr>
             </thead>
             <tbody id="treatments-table-body">
-              <tr>
-                <td colspan="3" style="padding: 10px; text-align: center;">Loading...</td>
-              </tr>
+              <tr><td colspan="4" style="padding: 10px; text-align: center;">Loading...</td></tr>
             </tbody>
           </table>
         </div>
