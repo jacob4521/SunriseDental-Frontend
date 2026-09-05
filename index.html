@@ -10,7 +10,7 @@
 
 <body>
 
-  <!-- 1. Login Section (මුලින්ම පෙන්වන්නේ මේකයි) -->
+  <!-- 1. Login Section -->
   <section id="login-section">
     <div class="login-container">
       <h2>Sunrise Dental Clinic</h2>
@@ -31,14 +31,12 @@
     </div>
   </section>
 
-  <!-- 2. Dashboard Section -->
-  <section id="dashboard-section" style="display: none;">
-    <h1>Dashboard</h1>
-    <button id="logout-btn">Logout</button>
-    <p>Welcome to the Sunrise Dental Clinic Management System!</p>
+  <!-- අලුත් Main Layout Wrapper (Sidebar + Content) -->
+  <div id="main-layout" style="display: none;">
 
-    <!-- Navigation Menu -->
-    <nav>
+    <!-- Sidebar -->
+    <nav id="sidebar">
+      <h2 class="sidebar-title">Sunrise Dental</h2>
       <button onclick="showSection('patients-section')">Patients</button>
       <button onclick="showSection('appointments-section')">Appointments</button>
       <button onclick="showSection('invoices-section')">Invoices</button>
@@ -47,29 +45,108 @@
       <button class="admin-only" onclick="showSection('staff-section')">Manage Staff</button>
       <button class="admin-only" onclick="showSection('dentists-section')">Add Dentists</button>
       <button class="admin-only" onclick="showSection('treatments-section')">Manage Treatments</button>
+
+      <button id="logout-btn" class="logout-sidebar">Logout</button>
     </nav>
-  </section>
 
-  <!-- 3. Patients Section (Hide කරලා තියෙන්නේ) -->
-  <section id="patients-section" style="display: none;">
-    <h2>Patients Management</h2>
-    <button onclick="showSection('dashboard-section')">Back to Dashboard</button>
-    <!-- මේක ඇතුළේ කේතය අපි පසුව ලියමු -->
-  </section>
+    <!-- Content Area (දකුණු පස) -->
+    <div id="content-area">
 
-  <!-- 4. Appointments Section (Hide කරලා තියෙන්නේ) -->
-  <section id="appointments-section" style="display: none;">
-    <h2>Appointments Management</h2>
-    <button onclick="showSection('dashboard-section')">Back to Dashboard</button>
-    <!-- මේක ඇතුළේ කේතය අපි පසුව ලියමු -->
-  </section>
 
-  <!-- 5. Invoices Section (Hide කරලා තියෙන්නේ) -->
-  <section id="invoices-section" style="display: none;">
-    <h2>Invoices Management</h2>
-    <button onclick="showSection('dashboard-section')">Back to Dashboard</button>
-    <!-- මේක ඇතුළේ කේතය අපි පසුව ලියමු -->
-  </section>
+      <!-- 3. Patients Section -->
+      <section id="patients-section" style="display: none;">
+        <h2>Patients Management</h2>
+        <!-- මේක ඇතුළේ කේතය අපි පසුව ලියමු -->
+      </section>
+
+<!-- 4. Appointments Section -->
+      <section id="appointments-section" style="display: none;">
+        <h2>Appointments Management</h2>
+        
+        <div class="form-container">
+          <h3>Book New Appointment</h3>
+          <form id="appointment-form">
+            
+            <!-- Patient Type Selection -->
+            <div class="form-group radio-group">
+              <label>Patient Status:</label>
+              <div>
+                <input type="radio" id="new-patient" name="patient-type" value="new" checked>
+                <label for="new-patient">New Patient</label>
+                
+                <input type="radio" id="existing-patient" name="patient-type" value="existing" style="margin-left: 15px;">
+                <label for="existing-patient">Existing Patient</label>
+              </div>
+            </div>
+
+            <!-- New Patient Fields -->
+            <div id="new-patient-fields">
+              <div class="form-group">
+                <label for="patient-name">Patient Name:</label>
+                <input type="text" id="patient-name" placeholder="Enter patient name">
+              </div>
+              <div class="form-group">
+                <label for="contact-number">Contact Number:</label>
+                <input type="text" id="contact-number" placeholder="07XXXXXXXX">
+              </div>
+              <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" placeholder="Enter patient address">
+              </div>
+            </div>
+
+            <!-- Existing Patient Fields (Hidden by default) -->
+            <div id="existing-patient-fields" style="display: none;">
+              <div class="form-group">
+                <label for="existing-patient-select">Select Patient:</label>
+                <select id="existing-patient-select">
+                  <option value="">-- Select or Load Patients --</option>
+                </select>
+              </div>
+            </div>
+
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
+
+            <!-- Appointment Details -->
+            <h4>Appointment Details</h4>
+            <div class="form-group">
+              <label for="dentist-select">Select Dentist:</label>
+              <select id="dentist-select" required>
+                <option value="">-- Loading Dentists --</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="treatment-select">Select Treatment:</label>
+              <select id="treatment-select" required>
+                <option value="">-- Loading Treatments --</option>
+              </select>
+            </div>
+            
+            <div class="form-group" style="display: flex; gap: 15px;">
+              <div style="flex: 1;">
+                <label for="appointment-date">Date:</label>
+                <input type="date" id="appointment-date" required>
+              </div>
+              <div style="flex: 1;">
+                <label for="appointment-time">Time:</label>
+                <input type="time" id="appointment-time" required>
+              </div>
+            </div>
+
+            <button type="submit" id="submit-appointment-btn" style="margin-top: 15px;">Book Appointment</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- 5. Invoices Section -->
+      <section id="invoices-section" style="display: none;">
+        <h2>Invoices Management</h2>
+        <!-- මේක ඇතුළේ කේතය අපි පසුව ලියමු -->
+      </section>
+
+    </div>
+  </div>
 
   <script src="js/app.js"></script>
 </body>
