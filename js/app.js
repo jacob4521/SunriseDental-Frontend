@@ -54,6 +54,8 @@ function showSection(sectionId) {
   document.getElementById("invoices-section").style.display = "none";
   document.getElementById("dentists-section").style.display = "none";
   document.getElementById("treatments-section").style.display = "none";
+  document.getElementById("help-section").style.display = "none";
+  document.getElementById("staff-section").style.display = "none";
 
   // Handle the Main Layout Wrapper
   const mainLayout = document.getElementById("main-layout");
@@ -85,8 +87,13 @@ function showSection(sectionId) {
   if (sectionId === "dentists-section") {
     loadDentistsTable(); // අලුත් Trigger එක
   }
+
   if (sectionId === "treatments-section") {
     loadTreatmentsTable(); // අලුත් Trigger එක
+  }
+
+  if (sectionId === "staff-section") {
+    loadStaffTable();
   }
 }
 
@@ -813,23 +820,24 @@ function printInvoice(
 // ==========================================
 
 async function loadDentistsTable() {
-    try {
-        const tbody = document.getElementById('dentists-table-body');
-        tbody.innerHTML = '<tr><td colspan="3" style="padding: 10px; text-align: center;">Loading...</td></tr>';
+  try {
+    const tbody = document.getElementById("dentists-table-body");
+    tbody.innerHTML =
+      '<tr><td colspan="3" style="padding: 10px; text-align: center;">Loading...</td></tr>';
 
-        const response = await fetchWithAuth('/dentists');
-        if (response.ok) {
-          const dentists = await response.json();
-          tbody.innerHTML = "";
+    const response = await fetchWithAuth("/dentists");
+    if (response.ok) {
+      const dentists = await response.json();
+      tbody.innerHTML = "";
 
-          if (dentists.length === 0) {
-            tbody.innerHTML =
-              '<tr><td colspan="3" style="padding: 10px; text-align: center;">No dentists found.</td></tr>';
-            return;
-          }
+      if (dentists.length === 0) {
+        tbody.innerHTML =
+          '<tr><td colspan="3" style="padding: 10px; text-align: center;">No dentists found.</td></tr>';
+        return;
+      }
 
-          dentists.forEach((d) => {
-            tbody.innerHTML += `
+      dentists.forEach((d) => {
+        tbody.innerHTML += `
                   <tr>
                     <td style="padding: 10px; border: 1px solid #ddd;">${d.dentistId}</td>
                     <td style="padding: 10px; border: 1px solid #ddd;">Dr. ${d.dentistName}</td>
@@ -838,50 +846,54 @@ async function loadDentistsTable() {
                     </td>
                   </tr>
                 `;
-          });
-          applyRoleBasedAccess(); // Staff අයට Delete බොත්තම සැඟවීමට
-        }
-    } catch (error) {
-        console.error("Error loading dentists:", error);
+      });
+      applyRoleBasedAccess(); // Staff අයට Delete බොත්තම සැඟවීමට
     }
+  } catch (error) {
+    console.error("Error loading dentists:", error);
+  }
 }
 
 async function deleteDentist(id) {
-    if (!confirm('Are you sure you want to delete this Dentist?')) return;
-    try {
-        const response = await fetchWithAuth(`/dentists/${id}`, { method: 'DELETE' });
-        if (response.ok) {
-            alert('Dentist deleted successfully!');
-            loadDentistsTable();
-        } else {
-            alert('Failed to delete dentist.');
-        }
-    } catch (error) { console.error('Error:', error); }
+  if (!confirm("Are you sure you want to delete this Dentist?")) return;
+  try {
+    const response = await fetchWithAuth(`/dentists/${id}`, {
+      method: "DELETE",
+    });
+    if (response.ok) {
+      alert("Dentist deleted successfully!");
+      loadDentistsTable();
+    } else {
+      alert("Failed to delete dentist.");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
 }
 
-const addDentistForm = document.getElementById('add-dentist-form');
+const addDentistForm = document.getElementById("add-dentist-form");
 if (addDentistForm) {
-    addDentistForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const dentistName = document.getElementById('new-dentist-name').value;
+  addDentistForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const dentistName = document.getElementById("new-dentist-name").value;
 
-        try {
-            const response = await fetchWithAuth('/dentists', {
-                method: 'POST',
-                body: JSON.stringify({ dentistName })
-            });
+    try {
+      const response = await fetchWithAuth("/dentists", {
+        method: "POST",
+        body: JSON.stringify({ dentistName }),
+      });
 
-            if (response.ok) {
-                alert('Dentist added successfully!');
-                addDentistForm.reset();
-                loadDentistsTable();
-            } else {
-                alert('Failed to add dentist (Admin Only).');
-            }
-        } catch (error) {
-            console.error('Error adding dentist:', error);
-        }
-    });
+      if (response.ok) {
+        alert("Dentist added successfully!");
+        addDentistForm.reset();
+        loadDentistsTable();
+      } else {
+        alert("Failed to add dentist (Admin Only).");
+      }
+    } catch (error) {
+      console.error("Error adding dentist:", error);
+    }
+  });
 }
 
 // ==========================================
@@ -889,22 +901,24 @@ if (addDentistForm) {
 // ==========================================
 
 async function loadTreatmentsTable() {
-    try {
-        const tbody = document.getElementById('treatments-table-body');
-        tbody.innerHTML = '<tr><td colspan="4" style="padding: 10px; text-align: center;">Loading...</td></tr>';
+  try {
+    const tbody = document.getElementById("treatments-table-body");
+    tbody.innerHTML =
+      '<tr><td colspan="4" style="padding: 10px; text-align: center;">Loading...</td></tr>';
 
-        const response = await fetchWithAuth('/treatments');
-        if (response.ok) {
-            const treatments = await response.json();
-            tbody.innerHTML = '';
+    const response = await fetchWithAuth("/treatments");
+    if (response.ok) {
+      const treatments = await response.json();
+      tbody.innerHTML = "";
 
-            if (treatments.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="padding: 10px; text-align: center;">No treatments found.</td></tr>';
-                return;
-            }
+      if (treatments.length === 0) {
+        tbody.innerHTML =
+          '<tr><td colspan="4" style="padding: 10px; text-align: center;">No treatments found.</td></tr>';
+        return;
+      }
 
-            treatments.forEach(t => {
-                tbody.innerHTML += `
+      treatments.forEach((t) => {
+        tbody.innerHTML += `
                   <tr>
                     <td style="padding: 10px; border: 1px solid #ddd;">${t.treatmentId}</td>
                     <td style="padding: 10px; border: 1px solid #ddd;">${t.treatmentType}</td>
@@ -914,49 +928,199 @@ async function loadTreatmentsTable() {
                     </td>
                   </tr>
                 `;
-            });
-            applyRoleBasedAccess(); // Staff අයට Delete බොත්තම සැඟවීමට
-        }
-    } catch (error) {
-        console.error("Error loading treatments:", error);
+      });
+      applyRoleBasedAccess(); // Staff අයට Delete බොත්තම සැඟවීමට
     }
+  } catch (error) {
+    console.error("Error loading treatments:", error);
+  }
 }
 
 async function deleteTreatment(id) {
-    if (!confirm('Are you sure you want to delete this Treatment?')) return;
-    try {
-        const response = await fetchWithAuth(`/treatments?id=${id}`, { method: 'DELETE' });
-        if (response.ok) {
-            alert('Treatment deleted successfully!');
-            loadTreatmentsTable();
-        } else {
-            alert('Failed to delete treatment.');
-        }
-    } catch (error) { console.error('Error:', error); }
+  if (!confirm("Are you sure you want to delete this Treatment?")) return;
+  try {
+    const response = await fetchWithAuth(`/treatments?id=${id}`, {
+      method: "DELETE",
+    });
+    if (response.ok) {
+      alert("Treatment deleted successfully!");
+      loadTreatmentsTable();
+    } else {
+      alert("Failed to delete treatment.");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
 }
 
-const addTreatmentForm = document.getElementById('add-treatment-form');
+const addTreatmentForm = document.getElementById("add-treatment-form");
 if (addTreatmentForm) {
-    addTreatmentForm.addEventListener('submit', async function(e) {
+  addTreatmentForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const treatmentType = document.getElementById("new-treatment-type").value;
+    const price = parseFloat(
+      document.getElementById("new-treatment-price").value,
+    );
+
+    try {
+      const response = await fetchWithAuth("/treatments", {
+        method: "POST",
+        body: JSON.stringify({ treatmentType, price }),
+      });
+
+      if (response.ok) {
+        alert("Treatment added successfully!");
+        addTreatmentForm.reset();
+        loadTreatmentsTable();
+      } else {
+        alert("Failed to add treatment (Admin Only).");
+      }
+    } catch (error) {
+      console.error("Error adding treatment:", error);
+    }
+  });
+}
+
+async function searchAppointmentById() {
+  const searchId = document.getElementById("search-app-id").value;
+  if (!searchId) {
+    alert("Please enter an Appointment Number");
+    return;
+  }
+
+  try {
+    const tbody = document.getElementById("appointments-table-body");
+    tbody.innerHTML =
+      '<tr><td colspan="6" style="padding: 10px; text-align: center;">Searching...</td></tr>';
+
+    const [appRes, patRes, denRes, trtRes] = await Promise.all([
+      fetchWithAuth("/appointments"),
+      fetchWithAuth("/patients"),
+      fetchWithAuth("/dentists"),
+      fetchWithAuth("/treatments"),
+    ]);
+
+    if (appRes.ok && patRes.ok && denRes.ok && trtRes.ok) {
+      const appointments = await appRes.json();
+      const patients = await patRes.json();
+      const dentists = await denRes.json();
+      const treatments = await trtRes.json();
+
+      // මෙන්න මෙතැනදී parseInt පාවිච්චි කර අගයන් දෙකම Numbers වලට හරවා සසඳනු ලැබේ
+      const filteredApps = appointments.filter(
+        (app) => parseInt(app.appointmentId) === parseInt(searchId),
+      );
+      tbody.innerHTML = "";
+
+      if (filteredApps.length === 0) {
+        tbody.innerHTML =
+          '<tr><td colspan="6" style="padding: 10px; text-align: center;">No appointment found with this Appointment Number.</td></tr>';
+        return;
+      }
+
+      filteredApps.forEach((app) => {
+        const patient = patients.find((p) => p.patientId === app.patientId);
+        const dentist = dentists.find((d) => d.dentistId === app.dentistId);
+        const treatment = treatments.find(
+          (t) => t.treatmentId === app.treatmentId,
+        );
+
+        tbody.innerHTML += `
+                  <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${app.appointmentId}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${patient ? patient.patientName : "Unknown"}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${dentist ? dentist.dentistName : "Unknown"}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${treatment ? treatment.treatmentType : "Unknown"}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${app.appointmentDate}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${app.appointmentTime}</td>
+                  </tr>
+                `;
+      });
+    }
+  } catch (error) {
+    console.error("Error searching appointment:", error);
+  }
+}
+
+// ==========================================
+// --- 20. Staff / User Management Logic ---
+// ==========================================
+
+async function loadStaffTable() {
+    try {
+        const tbody = document.getElementById('staff-table-body');
+        tbody.innerHTML = '<tr><td colspan="4" style="padding: 10px; text-align: center;">Loading...</td></tr>';
+
+        const response = await fetchWithAuth('/auth/users');
+        if (response.ok) {
+            const users = await response.json();
+            tbody.innerHTML = '';
+
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="padding: 10px; text-align: center;">No users found.</td></tr>';
+                return;
+            }
+
+            users.forEach(u => {
+                tbody.innerHTML += `
+                  <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${u.userId}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${u.username}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${u.role}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">
+                        <button class="admin-only" onclick="deleteUser('${u.username}')" style="background-color: #e74c3c; color: white; padding: 5px 10px; border: none; border-radius: 4px; font-size: 12px; cursor: pointer;">Delete</button>
+                    </td>
+                  </tr>
+                `;
+            });
+            applyRoleBasedAccess();
+        }
+    } catch (error) {
+        console.error("Error loading staff:", error);
+    }
+}
+
+const addStaffForm = document.getElementById('add-staff-form');
+if (addStaffForm) {
+    addStaffForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        const treatmentType = document.getElementById('new-treatment-type').value;
-        const price = parseFloat(document.getElementById('new-treatment-price').value);
+        const username = document.getElementById('new-staff-username').value;
+        const password = document.getElementById('new-staff-password').value;
+        const role = document.getElementById('new-staff-role').value;
 
         try {
-            const response = await fetchWithAuth('/treatments', {
+            const response = await fetchWithAuth('/auth/register', {
                 method: 'POST',
-                body: JSON.stringify({ treatmentType, price })
+                body: JSON.stringify({ username, password, role })
             });
 
             if (response.ok) {
-                alert('Treatment added successfully!');
-                addTreatmentForm.reset();
-                loadTreatmentsTable();
+                alert('User added successfully!');
+                addStaffForm.reset();
+                loadStaffTable();
             } else {
-                alert('Failed to add treatment (Admin Only).');
+                alert('Failed to add user. Username might already exist.');
             }
         } catch (error) {
-            console.error('Error adding treatment:', error);
+            console.error('Error adding user:', error);
         }
     });
+}
+
+async function deleteUser(username) {
+    if (!confirm(`Are you sure you want to delete user: ${username}?`)) return;
+    try {
+        const response = await fetchWithAuth('/auth/delete', {
+            method: 'DELETE',
+            body: JSON.stringify({ targetUsername: username })
+        });
+        if (response.ok) {
+            alert('User deleted successfully!');
+            loadStaffTable();
+        } else {
+            alert('Failed to delete user.');
+        }
+    } catch (error) { 
+        console.error('Error deleting user:', error); 
+    }
 }
