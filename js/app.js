@@ -52,6 +52,8 @@ function showSection(sectionId) {
   document.getElementById("patients-section").style.display = "none";
   document.getElementById("appointments-section").style.display = "none";
   document.getElementById("invoices-section").style.display = "none";
+  document.getElementById("dentists-section").style.display = "none";
+  document.getElementById("treatments-section").style.display = "none";
 
   // Handle the Main Layout Wrapper
   const mainLayout = document.getElementById("main-layout");
@@ -78,6 +80,13 @@ function showSection(sectionId) {
   // අලුත් කොටස: Invoices පිටුවට යද්දී Table එක Load කරන්න
   if (sectionId === "invoices-section") {
     loadInvoiceAppointmentsTable();
+  }
+
+  if (sectionId === "dentists-section") {
+    loadDentistsTable(); // අලුත් Trigger එක
+  }
+  if (sectionId === "treatments-section") {
+    loadTreatmentsTable(); // අලුත් Trigger එක
   }
 }
 
@@ -541,50 +550,53 @@ async function deletePatient(patientId) {
   }
 }
 
-
 // --- 14. Load Appointments for Invoice Section ---
 async function loadInvoiceAppointmentsTable() {
-    try {
-        const tbody = document.getElementById('invoice-appointments-table-body');
-        tbody.innerHTML = '<tr><td colspan="4" style="padding: 10px; text-align: center;">Loading appointments...</td></tr>';
+  try {
+    const tbody = document.getElementById("invoice-appointments-table-body");
+    tbody.innerHTML =
+      '<tr><td colspan="4" style="padding: 10px; text-align: center;">Loading appointments...</td></tr>';
 
-        // දත්ත 4ම එකවර ලබා ගැනීම (බිල්පතට සියලු විස්තර අවශ්‍ය නිසා)
-        const [appRes, patRes, denRes, trtRes] = await Promise.all([
-            fetchWithAuth('/appointments'),
-            fetchWithAuth('/patients'),
-            fetchWithAuth('/dentists'),
-            fetchWithAuth('/treatments')
-        ]);
+    // දත්ත 4ම එකවර ලබා ගැනීම (බිල්පතට සියලු විස්තර අවශ්‍ය නිසා)
+    const [appRes, patRes, denRes, trtRes] = await Promise.all([
+      fetchWithAuth("/appointments"),
+      fetchWithAuth("/patients"),
+      fetchWithAuth("/dentists"),
+      fetchWithAuth("/treatments"),
+    ]);
 
-        if (appRes.ok && patRes.ok && denRes.ok && trtRes.ok) {
-            const appointments = await appRes.json();
-            const patients = await patRes.json();
-            const dentists = await denRes.json();
-            const treatments = await trtRes.json();
+    if (appRes.ok && patRes.ok && denRes.ok && trtRes.ok) {
+      const appointments = await appRes.json();
+      const patients = await patRes.json();
+      const dentists = await denRes.json();
+      const treatments = await trtRes.json();
 
-            tbody.innerHTML = '';
+      tbody.innerHTML = "";
 
-            if (appointments.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="padding: 10px; text-align: center;">No appointments found.</td></tr>';
-                return;
-            }
+      if (appointments.length === 0) {
+        tbody.innerHTML =
+          '<tr><td colspan="4" style="padding: 10px; text-align: center;">No appointments found.</td></tr>';
+        return;
+      }
 
-            appointments.forEach(app => {
-                const patient = patients.find(p => p.patientId === app.patientId);
-                const dentist = dentists.find(d => d.dentistId === app.dentistId);
-                const treatment = treatments.find(t => t.treatmentId === app.treatmentId);
+      appointments.forEach((app) => {
+        const patient = patients.find((p) => p.patientId === app.patientId);
+        const dentist = dentists.find((d) => d.dentistId === app.dentistId);
+        const treatment = treatments.find(
+          (t) => t.treatmentId === app.treatmentId,
+        );
 
-                const patientName = patient ? patient.patientName : 'Unknown';
-                const dentistName = dentist ? dentist.dentistName : 'Unknown';
-                const treatmentName = treatment ? treatment.treatmentType : 'Unknown';
-                const treatmentPrice = treatment ? treatment.price : 0;
+        const patientName = patient ? patient.patientName : "Unknown";
+        const dentistName = dentist ? dentist.dentistName : "Unknown";
+        const treatmentName = treatment ? treatment.treatmentType : "Unknown";
+        const treatmentPrice = treatment ? treatment.price : 0;
 
-                // String values වල තියෙන single quotes escape කිරීම (Error එකක් නොඒමට)
-                const safePatient = patientName.replace(/'/g, "\\'");
-                const safeDentist = dentistName.replace(/'/g, "\\'");
-                const safeTreatment = treatmentName.replace(/'/g, "\\'");
+        // String values වල තියෙන single quotes escape කිරීම (Error එකක් නොඒමට)
+        const safePatient = patientName.replace(/'/g, "\\'");
+        const safeDentist = dentistName.replace(/'/g, "\\'");
+        const safeTreatment = treatmentName.replace(/'/g, "\\'");
 
-                const row = `
+        const row = `
                   <tr>
                     <td style="padding: 10px; border: 1px solid #ddd;">${app.appointmentId}</td>
                     <td style="padding: 10px; border: 1px solid #ddd;">${patientName}</td>
@@ -594,99 +606,130 @@ async function loadInvoiceAppointmentsTable() {
                     </td>
                   </tr>
                 `;
-                tbody.innerHTML += row;
-            });
-        } else {
-            tbody.innerHTML = '<tr><td colspan="4" style="padding: 10px; text-align: center; color: red;">Failed to load data.</td></tr>';
-        }
-    } catch (error) {
-        console.error("Error loading invoice appointments:", error);
+        tbody.innerHTML += row;
+      });
+    } else {
+      tbody.innerHTML =
+        '<tr><td colspan="4" style="padding: 10px; text-align: center; color: red;">Failed to load data.</td></tr>';
     }
+  } catch (error) {
+    console.error("Error loading invoice appointments:", error);
+  }
 }
 
 // --- 15. Show Quick Invoice Form (Auto-Calculate Price) ---
-function showQuickInvoiceForm(appointmentId, patientName, dentistName, treatmentName, treatmentPrice) {
-    // 1. ස්ථාවර සායන ගාස්තුව (ඔයාට අවශ්‍ය නම් මෙය වෙනස් කළ හැක)
-    const fixedCenterCharge = 1500.00; 
-    const totalAmount = treatmentPrice + fixedCenterCharge;
+function showQuickInvoiceForm(
+  appointmentId,
+  patientName,
+  dentistName,
+  treatmentName,
+  treatmentPrice,
+) {
+  // 1. ස්ථාවර සායන ගාස්තුව (ඔයාට අවශ්‍ය නම් මෙය වෙනස් කළ හැක)
+  const fixedCenterCharge = 1500.0;
+  const totalAmount = treatmentPrice + fixedCenterCharge;
 
-    document.getElementById('invoice-app-id').value = appointmentId;
-    document.getElementById('display-app-id').textContent = appointmentId;
-    
-    // Form එකේ dataset එකට අමතර දත්ත ටික තාවකාලිකව save කිරීම (Print කරද්දී ගන්න)
-    const form = document.getElementById('generate-invoice-form');
-    form.dataset.patientName = patientName;
-    form.dataset.dentistName = dentistName;
-    form.dataset.treatmentName = treatmentName;
-    form.dataset.treatmentPrice = treatmentPrice;
-    form.dataset.centerCharge = fixedCenterCharge;
+  document.getElementById("invoice-app-id").value = appointmentId;
+  document.getElementById("display-app-id").textContent = appointmentId;
 
-    // Auto-calculate කරපු මුදල පෙන්නනවා, ඒ වගේම වෙනස් කරන්න බැරි වෙන්න ReadOnly කරනවා
-    const amountInput = document.getElementById('invoice-amount');
-    amountInput.value = totalAmount.toFixed(2);
-    amountInput.readOnly = true; 
-    
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('invoice-date').value = today;
-    
-    document.getElementById('quick-invoice-form-container').style.display = 'block';
+  // Form එකේ dataset එකට අමතර දත්ත ටික තාවකාලිකව save කිරීම (Print කරද්දී ගන්න)
+  const form = document.getElementById("generate-invoice-form");
+  form.dataset.patientName = patientName;
+  form.dataset.dentistName = dentistName;
+  form.dataset.treatmentName = treatmentName;
+  form.dataset.treatmentPrice = treatmentPrice;
+  form.dataset.centerCharge = fixedCenterCharge;
+
+  // Auto-calculate කරපු මුදල පෙන්නනවා, ඒ වගේම වෙනස් කරන්න බැරි වෙන්න ReadOnly කරනවා
+  const amountInput = document.getElementById("invoice-amount");
+  amountInput.value = totalAmount.toFixed(2);
+  amountInput.readOnly = true;
+
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("invoice-date").value = today;
+
+  document.getElementById("quick-invoice-form-container").style.display =
+    "block";
 }
 
 // --- 16. Submit Invoice and Print ---
-const generateInvoiceForm = document.getElementById('generate-invoice-form');
+const generateInvoiceForm = document.getElementById("generate-invoice-form");
 if (generateInvoiceForm) {
-    generateInvoiceForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
+  generateInvoiceForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
 
-        const appointmentId = document.getElementById('invoice-app-id').value;
-        const totalAmount = parseFloat(document.getElementById('invoice-amount').value);
-        const issuedDate = document.getElementById('invoice-date').value;
-        const paymentStatus = document.getElementById('invoice-status').value;
+    const appointmentId = document.getElementById("invoice-app-id").value;
+    const totalAmount = parseFloat(
+      document.getElementById("invoice-amount").value,
+    );
+    const issuedDate = document.getElementById("invoice-date").value;
+    const paymentStatus = document.getElementById("invoice-status").value;
 
-        // Backend එකට යවන දත්ත
-        const invoiceData = {
-            appointmentId: parseInt(appointmentId),
-            totalAmount: totalAmount,
-            issuedDate: issuedDate,
-            paymentStatus: paymentStatus
-        };
+    // Backend එකට යවන දත්ත
+    const invoiceData = {
+      appointmentId: parseInt(appointmentId),
+      totalAmount: totalAmount,
+      issuedDate: issuedDate,
+      paymentStatus: paymentStatus,
+    };
 
-        try {
-            const response = await fetchWithAuth('/invoices', {
-                method: 'POST',
-                body: JSON.stringify(invoiceData)
-            });
+    try {
+      const response = await fetchWithAuth("/invoices", {
+        method: "POST",
+        body: JSON.stringify(invoiceData),
+      });
 
-            if (response.ok) {
-                alert('Invoice Created Successfully!');
-                document.getElementById('quick-invoice-form-container').style.display = 'none';
-                
-                // Form dataset එකෙන් අමතර දත්ත ටික අරගන්නවා
-                const pName = generateInvoiceForm.dataset.patientName;
-                const dName = generateInvoiceForm.dataset.dentistName;
-                const tName = generateInvoiceForm.dataset.treatmentName;
-                const tPrice = parseFloat(generateInvoiceForm.dataset.treatmentPrice);
-                const cCharge = parseFloat(generateInvoiceForm.dataset.centerCharge);
+      if (response.ok) {
+        alert("Invoice Created Successfully!");
+        document.getElementById("quick-invoice-form-container").style.display =
+          "none";
 
-                generateInvoiceForm.reset();
+        // Form dataset එකෙන් අමතර දත්ත ටික අරගන්නවා
+        const pName = generateInvoiceForm.dataset.patientName;
+        const dName = generateInvoiceForm.dataset.dentistName;
+        const tName = generateInvoiceForm.dataset.treatmentName;
+        const tPrice = parseFloat(generateInvoiceForm.dataset.treatmentPrice);
+        const cCharge = parseFloat(generateInvoiceForm.dataset.centerCharge);
 
-                // Print function එකට සියලුම දත්ත යැවීම
-                printInvoice(appointmentId, issuedDate, paymentStatus, pName, dName, tName, tPrice, cCharge, totalAmount);
-            } else {
-                const errData = await response.json();
-                alert(`Failed to create invoice: ${errData.error || 'Unknown error'}`);
-            }
-        } catch (error) {
-            console.error('Error generating invoice:', error);
-        }
-    });
+        generateInvoiceForm.reset();
+
+        // Print function එකට සියලුම දත්ත යැවීම
+        printInvoice(
+          appointmentId,
+          issuedDate,
+          paymentStatus,
+          pName,
+          dName,
+          tName,
+          tPrice,
+          cCharge,
+          totalAmount,
+        );
+      } else {
+        const errData = await response.json();
+        alert(`Failed to create invoice: ${errData.error || "Unknown error"}`);
+      }
+    } catch (error) {
+      console.error("Error generating invoice:", error);
+    }
+  });
 }
 
 // --- 17. Print Invoice Logic (Complete Breakdown) ---
-function printInvoice(appointmentId, date, status, patientName, dentistName, treatmentName, treatmentPrice, centerCharge, totalAmount) {
-    const printWindow = window.open('', '_blank', 'width=700,height=500');
-    
-    const htmlContent = `
+function printInvoice(
+  appointmentId,
+  date,
+  status,
+  patientName,
+  dentistName,
+  treatmentName,
+  treatmentPrice,
+  centerCharge,
+  totalAmount,
+) {
+  const printWindow = window.open("", "_blank", "width=700,height=500");
+
+  const htmlContent = `
         <html>
         <head>
             <title>Invoice - Sunrise Dental Clinic</title>
@@ -761,6 +804,159 @@ function printInvoice(appointmentId, date, status, patientName, dentistName, tre
         </html>
     `;
 
-    printWindow.document.write(htmlContent);
-    printWindow.document.close();
+  printWindow.document.write(htmlContent);
+  printWindow.document.close();
+}
+
+// ==========================================
+// --- 18. Dentists Management Logic ---
+// ==========================================
+
+async function loadDentistsTable() {
+    try {
+        const tbody = document.getElementById('dentists-table-body');
+        tbody.innerHTML = '<tr><td colspan="3" style="padding: 10px; text-align: center;">Loading...</td></tr>';
+
+        const response = await fetchWithAuth('/dentists');
+        if (response.ok) {
+          const dentists = await response.json();
+          tbody.innerHTML = "";
+
+          if (dentists.length === 0) {
+            tbody.innerHTML =
+              '<tr><td colspan="3" style="padding: 10px; text-align: center;">No dentists found.</td></tr>';
+            return;
+          }
+
+          dentists.forEach((d) => {
+            tbody.innerHTML += `
+                  <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${d.dentistId}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Dr. ${d.dentistName}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">
+                        <button class="admin-only" onclick="deleteDentist(${d.dentistId})" style="background-color: #e74c3c; padding: 5px 10px; font-size: 12px; width: auto;">Delete</button>
+                    </td>
+                  </tr>
+                `;
+          });
+          applyRoleBasedAccess(); // Staff අයට Delete බොත්තම සැඟවීමට
+        }
+    } catch (error) {
+        console.error("Error loading dentists:", error);
+    }
+}
+
+async function deleteDentist(id) {
+    if (!confirm('Are you sure you want to delete this Dentist?')) return;
+    try {
+        const response = await fetchWithAuth(`/dentists/${id}`, { method: 'DELETE' });
+        if (response.ok) {
+            alert('Dentist deleted successfully!');
+            loadDentistsTable();
+        } else {
+            alert('Failed to delete dentist.');
+        }
+    } catch (error) { console.error('Error:', error); }
+}
+
+const addDentistForm = document.getElementById('add-dentist-form');
+if (addDentistForm) {
+    addDentistForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const dentistName = document.getElementById('new-dentist-name').value;
+
+        try {
+            const response = await fetchWithAuth('/dentists', {
+                method: 'POST',
+                body: JSON.stringify({ dentistName })
+            });
+
+            if (response.ok) {
+                alert('Dentist added successfully!');
+                addDentistForm.reset();
+                loadDentistsTable();
+            } else {
+                alert('Failed to add dentist (Admin Only).');
+            }
+        } catch (error) {
+            console.error('Error adding dentist:', error);
+        }
+    });
+}
+
+// ==========================================
+// --- 19. Treatments Management Logic ---
+// ==========================================
+
+async function loadTreatmentsTable() {
+    try {
+        const tbody = document.getElementById('treatments-table-body');
+        tbody.innerHTML = '<tr><td colspan="4" style="padding: 10px; text-align: center;">Loading...</td></tr>';
+
+        const response = await fetchWithAuth('/treatments');
+        if (response.ok) {
+            const treatments = await response.json();
+            tbody.innerHTML = '';
+
+            if (treatments.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="padding: 10px; text-align: center;">No treatments found.</td></tr>';
+                return;
+            }
+
+            treatments.forEach(t => {
+                tbody.innerHTML += `
+                  <tr>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${t.treatmentId}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">${t.treatmentType}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd;">Rs. ${t.price.toFixed(2)}</td>
+                    <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">
+                        <button class="admin-only" onclick="deleteTreatment(${t.treatmentId})" style="background-color: #e74c3c; padding: 5px 10px; font-size: 12px; width: auto;">Delete</button>
+                    </td>
+                  </tr>
+                `;
+            });
+            applyRoleBasedAccess(); // Staff අයට Delete බොත්තම සැඟවීමට
+        }
+    } catch (error) {
+        console.error("Error loading treatments:", error);
+    }
+}
+
+async function deleteTreatment(id) {
+    if (!confirm('Are you sure you want to delete this Treatment?')) return;
+    try {
+        const response = await fetchWithAuth(`/treatments?id=${id}`, { method: 'DELETE' });
+        if (response.ok) {
+            alert('Treatment deleted successfully!');
+            loadTreatmentsTable();
+        } else {
+            alert('Failed to delete treatment.');
+        }
+    } catch (error) { console.error('Error:', error); }
+}
+
+const addTreatmentForm = document.getElementById('add-treatment-form');
+if (addTreatmentForm) {
+    addTreatmentForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const treatmentType = document.getElementById('new-treatment-type').value;
+        const price = parseFloat(document.getElementById('new-treatment-price').value);
+
+        try {
+            const response = await fetchWithAuth('/treatments', {
+                method: 'POST',
+                body: JSON.stringify({ treatmentType, price })
+            });
+
+            if (response.ok) {
+                alert('Treatment added successfully!');
+                addTreatmentForm.reset();
+                loadTreatmentsTable();
+            } else {
+                alert('Failed to add treatment (Admin Only).');
+            }
+        } catch (error) {
+            console.error('Error adding treatment:', error);
+        }
+    });
 }

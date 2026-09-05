@@ -40,6 +40,8 @@
       <button onclick="showSection('patients-section')">Patients</button>
       <button onclick="showSection('appointments-section')">Appointments</button>
       <button onclick="showSection('invoices-section')">Invoices</button>
+      <button href="#" onclick="showSection('dentists-section')">Dentists</button>
+      <button href="#" onclick="showSection('treatments-section')">Treatments</button>
 
       <!-- Admin ට පමණක් පෙනෙන බොත්තම් -->
       <button class="admin-only" onclick="showSection('staff-section')">Manage Staff</button>
@@ -204,12 +206,13 @@
         </div>
       </section>
 
-<!-- 5. Invoices Section -->
+      <!-- 5. Invoices Section -->
       <section id="invoices-section" style="display: none;">
         <h2>Invoice Management</h2>
-        
+
         <!-- Appointments Table for Billing -->
-        <div class="table-container" style="margin-top: 20px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+        <div class="table-container"
+          style="margin-top: 20px; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
           <h3>Select Appointment to Bill</h3>
           <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
             <thead>
@@ -229,21 +232,22 @@
         </div>
 
         <!-- Quick Invoice Form (Hidden by default) -->
-        <div id="quick-invoice-form-container" class="form-container" style="display: none; margin-top: 30px; border: 2px solid #3498db;">
+        <div id="quick-invoice-form-container" class="form-container"
+          style="display: none; margin-top: 30px; border: 2px solid #3498db;">
           <h3>Generate Invoice for Appointment ID: <span id="display-app-id" style="color: #e74c3c;"></span></h3>
           <form id="generate-invoice-form">
             <input type="hidden" id="invoice-app-id">
-            
+
             <div class="form-group">
               <label for="invoice-amount">Total Amount (Rs.):</label>
               <input type="number" id="invoice-amount" step="0.01" placeholder="Enter amount" required>
             </div>
-            
+
             <div class="form-group">
               <label for="invoice-date">Issued Date:</label>
               <input type="date" id="invoice-date" required>
             </div>
-            
+
             <div class="form-group">
               <label for="invoice-status">Payment Status:</label>
               <select id="invoice-status" required>
@@ -251,12 +255,91 @@
                 <option value="Pending">Pending</option>
               </select>
             </div>
-            
+
             <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button type="submit" style="background-color: #27ae60; flex: 1;">Save & Print Invoice</button>
-                <button type="button" onclick="document.getElementById('quick-invoice-form-container').style.display='none'" style="background-color: #95a5a6; flex: 1;">Cancel</button>
+              <button type="submit" style="background-color: #27ae60; flex: 1;">Save & Print Invoice</button>
+              <button type="button"
+                onclick="document.getElementById('quick-invoice-form-container').style.display='none'"
+                style="background-color: #95a5a6; flex: 1;">Cancel</button>
             </div>
           </form>
+        </div>
+      </section>
+
+      <!-- 6. Dentists Section -->
+      <section id="dentists-section" style="display: none;">
+        <h2>Dentists Management</h2>
+
+        <!-- Add Dentist Form (Admin Only) -->
+        <div class="form-container admin-only">
+          <h3>Add New Dentist</h3>
+          <form id="add-dentist-form">
+            <div class="form-group">
+              <label for="new-dentist-name">Dentist Name:</label>
+              <input type="text" id="new-dentist-name" placeholder="Dr. Name" required>
+            </div>
+            <button type="submit" style="margin-top: 15px;">Save Dentist</button>
+          </form>
+        </div>
+
+        <!-- Dentists Table (View for All) -->
+        <div class="table-container" style="margin-top: 30px; background: #fff; padding: 20px; border-radius: 8px;">
+          <h3>All Dentists</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <thead>
+              <tr style="background-color: #2c3e50; color: white; text-align: left;">
+                <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Dentist Name</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="dentists-table-body">
+              <tr>
+                <td colspan="2" style="padding: 10px; text-align: center;">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 7. Treatments Section -->
+      <section id="treatments-section" style="display: none;">
+        <h2>Treatments Management</h2>
+
+        <!-- Add Treatment Form (Admin Only) -->
+        <div class="form-container admin-only">
+          <h3>Add New Treatment</h3>
+          <form id="add-treatment-form">
+            <div class="form-group">
+              <label for="new-treatment-type">Treatment Type:</label>
+              <input type="text" id="new-treatment-type" placeholder="e.g., Root Canal" required>
+            </div>
+            <div class="form-group">
+              <label for="new-treatment-price">Price (Rs.):</label>
+              <input type="number" id="new-treatment-price" step="0.01" placeholder="Enter amount" required>
+            </div>
+            <button type="submit" style="margin-top: 15px;">Save Treatment</button>
+          </form>
+        </div>
+
+        <!-- Treatments Table (View for All) -->
+        <div class="table-container" style="margin-top: 30px; background: #fff; padding: 20px; border-radius: 8px;">
+          <h3>Available Treatments</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <thead>
+              <tr style="background-color: #2c3e50; color: white; text-align: left;">
+                <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Treatment Type</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Price (Rs.)</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="treatments-table-body">
+              <tr>
+                <td colspan="3" style="padding: 10px; text-align: center;">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
